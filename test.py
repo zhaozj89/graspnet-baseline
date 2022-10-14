@@ -1,6 +1,7 @@
 """ Testing for GraspNet baseline model. """
 
 import os
+os.environ['CUDA_VISIBLE_DEVICES'] = "1"
 import sys
 import numpy as np
 import argparse
@@ -114,5 +115,5 @@ def evaluate():
     np.save(save_dir, res)
 
 if __name__=='__main__':
-    inference()
+    # inference()
     evaluate()

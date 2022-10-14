@@ -36,11 +36,11 @@ class GraspNetDataset(Dataset):
         self.collision_labels = {}
 
         if split == 'train':
-            self.sceneIds = list( range(100) )
+            self.sceneIds = list( range(100) )#[:10]
         elif split == 'test':
             self.sceneIds = list( range(100,190) )
         elif split == 'test_seen':
-            self.sceneIds = list( range(100,130) )
+            self.sceneIds = list( range(100,130) )#[:10]
         elif split == 'test_similar':
             self.sceneIds = list( range(130,160) )
         elif split == 'test_novel':
@@ -248,14 +248,14 @@ class GraspNetDataset(Dataset):
         return ret_dict
 
 def load_grasp_labels(root):
-    obj_names = list(range(88))
+    obj_names = list(range(88))#[:10]
     valid_obj_idxs = []
     grasp_labels = {}
     for i, obj_name in enumerate(tqdm(obj_names, desc='Loading grasping labels...')):
         if i == 18: continue
         valid_obj_idxs.append(i + 1) #here align with label png
         label = np.load(os.path.join(root, 'grasp_label', '{}_labels.npz'.format(str(i).zfill(3))))
-        tolerance = np.load(os.path.join(BASE_DIR, 'tolerance', '{}_tolerance.npy'.format(str(i).zfill(3))))
+        tolerance = np.load(os.path.join(root, 'tolerance', '{}_tolerance.npy'.format(str(i).zfill(3))))
         grasp_labels[i + 1] = (label['points'].astype(np.float32), label['offsets'].astype(np.float32),
                                 label['scores'].astype(np.float32), tolerance)
 

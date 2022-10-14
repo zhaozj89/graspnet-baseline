@@ -1,6 +1,7 @@
 """ Training routine for GraspNet baseline model. """
 
 import os
+os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 import sys
 import numpy as np
 from datetime import datetime
@@ -85,12 +86,12 @@ optimizer = optim.Adam(net.parameters(), lr=cfgs.learning_rate, weight_decay=cfg
 # Load checkpoint if there is any
 it = -1 # for the initialize value of `LambdaLR` and `BNMomentumScheduler`
 start_epoch = 0
-if CHECKPOINT_PATH is not None and os.path.isfile(CHECKPOINT_PATH):
-    checkpoint = torch.load(CHECKPOINT_PATH)
-    net.load_state_dict(checkpoint['model_state_dict'])
-    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    start_epoch = checkpoint['epoch']
-    log_string("-> loaded checkpoint %s (epoch: %d)"%(CHECKPOINT_PATH, start_epoch))
+# if CHECKPOINT_PATH is not None and os.path.isfile(CHECKPOINT_PATH):
+#     checkpoint = torch.load(CHECKPOINT_PATH)
+#     net.load_state_dict(checkpoint['model_state_dict'])
+#     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+#     start_epoch = checkpoint['epoch']
+#     log_string("-> loaded checkpoint %s (epoch: %d)"%(CHECKPOINT_PATH, start_epoch))
 # Decay Batchnorm momentum from 0.5 to 0.999
 # note: pytorch's BN momentum (default 0.1)= 1 - tensorflow's BN momentum
 BN_MOMENTUM_INIT = 0.5
