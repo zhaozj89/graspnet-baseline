@@ -207,17 +207,18 @@ def train(start_epoch):
         # REF: https://github.com/pytorch/pytorch/issues/5059
         np.random.seed()
         train_one_epoch()
-        loss = evaluate_one_epoch()
+        # loss = evaluate_one_epoch()
         # Save checkpoint
         save_dict = {'epoch': epoch+1, # after training one epoch, the start_epoch should be epoch+1
                     'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': loss,
+                    # 'loss': loss,
+                    'loss': -1
                     }
         try: # with nn.DataParallel() the net is added as a submodule of DataParallel
             save_dict['model_state_dict'] = net.module.state_dict()
         except:
             save_dict['model_state_dict'] = net.state_dict()
-        torch.save(save_dict, os.path.join(cfgs.log_dir, 'checkpoint.tar'))
+        torch.save(save_dict, os.path.join(cfgs.log_dir, 'checkpoint_{}.tar'.format(epoch)))
 
 if __name__=='__main__':
     train(start_epoch)

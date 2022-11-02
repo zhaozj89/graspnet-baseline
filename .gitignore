@@ -14,3 +14,12 @@
 **/*.egg-info/**
 logs
 dataset/tolerance
+
+StratifiedTransformer/pre-trained
+models_OLD
+OLD
+logs_stratified
+logs_stratified_corrected
+logs_stratified_new
+logs_debug
+experiments

@@ -276,7 +276,7 @@ class BasicLayer(nn.Module):
 
         v2p_map, p2v_map, counts = grid_sample(xyz, batch, window_size, start=None)
 
-        shift_size = 1/2*window_size
+        shift_size = 1*window_size/2
         shift_v2p_map, shift_p2v_map, shift_counts = grid_sample(xyz+shift_size, batch, window_size, start=xyz.min(0)[0])
         
         downsample_scale = self.downsample_scale

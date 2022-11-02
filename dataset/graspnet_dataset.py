@@ -144,10 +144,14 @@ class GraspNetDataset(Dataset):
             idxs = np.concatenate([idxs1, idxs2], axis=0)
         cloud_sampled = cloud_masked[idxs]
         color_sampled = color_masked[idxs]
-        
+
         ret_dict = {}
         ret_dict['point_clouds'] = cloud_sampled.astype(np.float32)
         ret_dict['cloud_colors'] = color_sampled.astype(np.float32)
+
+        ret_dict['coord_clouds'] = ret_dict['point_clouds']
+        coord_min = np.min(ret_dict['coord_clouds'], 0)
+        ret_dict['coord_clouds'] -= coord_min
 
         return ret_dict
 
@@ -245,6 +249,10 @@ class GraspNetDataset(Dataset):
         ret_dict['grasp_labels_list'] = grasp_scores_list
         ret_dict['grasp_tolerance_list'] = grasp_tolerance_list
 
+        ret_dict['coord_clouds'] = ret_dict['point_clouds']
+        coord_min = np.min(ret_dict['coord_clouds'], 0)
+        ret_dict['coord_clouds'] -= coord_min
+        
         return ret_dict
 
 def load_grasp_labels(root):

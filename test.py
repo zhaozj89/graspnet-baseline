@@ -1,7 +1,8 @@
 """ Testing for GraspNet baseline model. """
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = "1"
+# os.environ['CUDA_VISIBLE_DEVICES'] = "2"
+# os.environ['DISPLAY'] = ':0'
 import sys
 import numpy as np
 import argparse
@@ -27,7 +28,7 @@ parser.add_argument('--dump_dir', required=True, help='Dump dir to save outputs'
 parser.add_argument('--camera', required=True, help='Camera split [realsense/kinect]')
 parser.add_argument('--num_point', type=int, default=20000, help='Point Number [default: 20000]')
 parser.add_argument('--num_view', type=int, default=300, help='View Number [default: 300]')
-parser.add_argument('--batch_size', type=int, default=1, help='Batch Size during inference [default: 1]')
+parser.add_argument('--batch_size', type=int, default=10, help='Batch Size during inference [default: 1]')
 parser.add_argument('--collision_thresh', type=float, default=0.01, help='Collision Threshold in collision detection [default: 0.01]')
 parser.add_argument('--voxel_size', type=float, default=0.01, help='Voxel Size to process point clouds before collision detection [default: 0.01]')
 parser.add_argument('--num_workers', type=int, default=30, help='Number of workers used in evaluation [default: 30]')
@@ -44,7 +45,7 @@ def my_worker_init_fn(worker_id):
 # Create Dataset and Dataloader
 TEST_DATASET = GraspNetDataset(cfgs.dataset_root, valid_obj_idxs=None, grasp_labels=None, split='test', camera=cfgs.camera, num_points=cfgs.num_point, remove_outlier=True, augment=False, load_label=False)
 
-print(len(TEST_DATASET))
+# print(len(TEST_DATASET))
 SCENE_LIST = TEST_DATASET.scene_list()
 TEST_DATALOADER = DataLoader(TEST_DATASET, batch_size=cfgs.batch_size, shuffle=False,
     num_workers=4, worker_init_fn=my_worker_init_fn, collate_fn=collate_fn)
@@ -115,5 +116,5 @@ def evaluate():
     np.save(save_dir, res)
 
 if __name__=='__main__':
-    # inference()
+    inference()
     evaluate()

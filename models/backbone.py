@@ -48,6 +48,7 @@ class StratifiedTransformerBackbone(nn.Module):
 
         point_clouds = end_points['point_clouds']
         cloud_colors = end_points['cloud_colors']
+        coord_clouds = end_points['coord_clouds']
 
         npoints = 1024
         if npoints == 1024:
@@ -60,11 +61,14 @@ class StratifiedTransformerBackbone(nn.Module):
         fps_idx = fps_idx[:, np.random.choice(point_all, npoints, False)]
         point_clouds = pointnet2_utils.gather_operation(point_clouds.transpose(1, 2).contiguous(), fps_idx).transpose(1, 2).contiguous()  # (B, N, 3)
         cloud_colors = pointnet2_utils.gather_operation(cloud_colors.transpose(1, 2).contiguous(), fps_idx).transpose(1, 2).contiguous()  # (B, N, 3)
+        coord_clouds = pointnet2_utils.gather_operation(coord_clouds.transpose(1, 2).contiguous(), fps_idx).transpose(1, 2).contiguous()  # (B, N, 3)
 
+        cloud_colors = cloud_colors / 255
+        
         offset, count = [], 0
         max_batch_points = 140000
         k = 0
-        for item in point_clouds:
+        for item in coord_clouds:
             # print("item shape:",item.shape)
             count += item.shape[0]
             if count > max_batch_points:
@@ -72,7 +76,7 @@ class StratifiedTransformerBackbone(nn.Module):
             k += 1
             offset.append(count)
 
-        coord = torch.cat([ele for ele in point_clouds[:k]])
+        coord = torch.cat([ele for ele in coord_clouds[:k]])
         feat = torch.cat([ele for ele in cloud_colors[:k]])
         offset = torch.IntTensor(offset[:k])
 
@@ -91,7 +95,7 @@ class StratifiedTransformerBackbone(nn.Module):
         neighbor_idx = neighbor_idx.cuda(non_blocking=True)
         assert batch.shape[0] == feat.shape[0]
 
-        feat = torch.cat([feat, coord], 1)
+        feat = torch.cat([coord, feat], 1)
 
         output = self.model(feat, coord, offset, batch, neighbor_idx)
         
